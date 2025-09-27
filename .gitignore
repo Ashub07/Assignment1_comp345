@@ -1,0 +1,15 @@
+# Build files
+cmake-build-debug/
+CMakeFiles/
+*.o
+*.obj
+*.exe
+*.out
+*.log
+
+# CLion
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
