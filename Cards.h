@@ -38,6 +38,7 @@ private:
 public:
     Deck();
     Deck(const Deck& other);    //Copy Constructor
+    Deck(const std::vector<Card*>& cards);
     Deck& operator=(const Deck& other);     //Assignment Operator
     ~Deck();    //Deconstructor
 

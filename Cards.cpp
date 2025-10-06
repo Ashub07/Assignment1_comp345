@@ -169,6 +169,13 @@ Deck::Deck(const Deck& other) : cards_(new std::vector<Card*>) {
     }
 }
 
+Deck::Deck(const std::vector<Card*>& cards) : cards_(new std::vector<Card*>) {
+    cards_->reserve(cards.size());
+    for (Card* c : cards) {
+        cards_->push_back(new Card(*c));  // deep copy each Card
+    }
+}
+
 // Copy-assign a Deck: build a fresh deep copy first, then replace old contents safely.
 Deck& Deck::operator=(const Deck& other) {
     if (this != &other) {
