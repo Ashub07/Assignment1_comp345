@@ -4,8 +4,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <random>
 #include <stdexcept>
+#include <random>
 
 
 //local helpers--------------------
@@ -60,8 +60,8 @@ Orders* Card::toOrder(Player& p) const {  //create new order for a player add co
         case cardType::Bomb:          return new Bomb();
         case cardType::Blockade:      return new Blockade();
         case cardType::Airlift:       return new Airlift();
-        case cardType::Diplomacy:     return new Diplomacy();
-        case cardType::Reinforcement: return new Reinforcement();
+        case cardType::Diplomacy:     return new Negotiate();
+        case cardType::Reinforcement: return new Deploy();
         default:                      return nullptr;
     }
 }
@@ -79,7 +79,7 @@ void Card::play(Player& p,Deck& d,Hand& h){
     }
 
     //Add order to the list
-     OrdersList* list = p.getOrders();
+     OrdersList* list = p.getOrder();
     if (!list) {
         //if Player has no OrdersList, avoid leaking the order
         std::cerr << "[Card::play] Player has no OrdersList; dropping order.\n";
@@ -233,6 +233,27 @@ void Deck::addBack(Card* c) {
 size_t Deck::size() const {
     return cards_->size();
 }
+
+//printing purposes
+std::ostream& operator<<(std::ostream& os, const Card& c) {
+    os << "Card(" << to_string(c.getType()) << ")";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Deck& d) {
+    os << "Deck[" << d.size() << "]: { ";
+    for (const Card* c : *d.cards_) os << *c << " ";
+    os << "}";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Hand& h) {
+    os << "Hand[" << h.cards()->size() << "]: { ";
+    for (const Card* c : *h.cards()) os << *c << " ";
+    os << "}";
+    return os;
+}
+
 
 
 

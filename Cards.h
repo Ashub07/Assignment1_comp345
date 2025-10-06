@@ -4,6 +4,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstddef>
+
+class Player;
+class Orders;
+class OrdersList;
+class Hand;  
 
 
 
