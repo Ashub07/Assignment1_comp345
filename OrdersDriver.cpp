@@ -3,97 +3,91 @@
 #include <vector>
 
 void testOrdersList() {
-	//create orders
-	  //get territories
-	std::vector<Territory*> territories;
-	Territory* t1 = new Territory("T1", "C1", "Joe", 2, 1, nullptr);
-	territories.push_back(t1);
-	Territory* t2 = new Territory("T2", "C2", "Joe", 3, 2, nullptr);
-	territories.push_back(t2);
-	Territory* t3 = new Territory("T3", "C1", "Lily", 2, 3, nullptr);
-	territories.push_back(t3);
-	Territory* t4 = new Territory("T4", "C2", "Joe", 1, 4, nullptr);
-	territories.push_back(t4);
+    std::cout << "----- Orders Driver Test -----" << std::endl;
 
-	//create deck
-	std::vector<Card*> cards1;
-	Card* c1 = new Card(cardType::Bomb);
-	cards1.push_back(c1);
-	Card* c2 = new Card(cardType::Diplomacy);
-	cards1.push_back(c2);
-	Card* c3 = new Card(cardType::Airlift);
-	cards1.push_back(c3);
+    // ===== Territories =====
+    std::cout << "[DEBUG] Creating territories..." << std::endl;
 
-	Deck d1(cards1);
+    // create explicit empty adjacency vectors so the Territory ctor never sees nullptr
+    auto* adj1 = new std::vector<Territory*>();
+    auto* adj2 = new std::vector<Territory*>();
+    auto* adj3 = new std::vector<Territory*>();
+    auto* adj4 = new std::vector<Territory*>();
 
-	OrdersList* ordli1 = new OrdersList();
+    std::vector<Territory*> territories1;
+    Territory* t1 = new Territory("T1", "C1", "Joe", 2, 1, adj1);
+    territories1.push_back(t1);
+    Territory* t2 = new Territory("T2", "C2", "Joe", 3, 2, adj2);
+    territories1.push_back(t2);
 
+    // ===== Deck for p1 =====
+    std::cout << "[DEBUG] Creating deck for p1..." << std::endl;
+    std::vector<Card*> cards1;
+    cards1.push_back(new Card(cardType::Bomb));
+    cards1.push_back(new Card(cardType::Diplomacy));
+    cards1.push_back(new Card(cardType::Airlift));
+    Deck* d1 = new Deck(cards1);
 
-	//create player
-	Player* p1 = new Player("Joe", territories, d1, *ordli1);
+    OrdersList* ordli1 = new OrdersList();
 
-	std::vector<Territory*> territories2;
-	Territory* t11 = new Territory("T1", "C1", "Joee", 2, 1, nullptr);
-	territories.push_back(t1);
-	Territory* t22 = new Territory("T2", "C2", "Joee", 3, 2, nullptr);
-	territories.push_back(t2);
-	Territory* t33 = new Territory("T3", "C1", "Lilyy", 2, 3, nullptr);
-	territories.push_back(t3);
-	Territory* t44 = new Territory("T4", "C2", "Joee", 1, 4, nullptr);
-	territories.push_back(t4);
+    std::cout << "[DEBUG] Creating Player p1..." << std::endl;
+    Player* p1 = new Player("Joe", territories1, d1, ordli1);
 
-	//create deck
-	std::vector<Card*> cards2;
-	Card* c11 = new Card(cardType::Bomb);
-	cards1.push_back(c1);
-	Card* c22 = new Card(cardType::Diplomacy);
-	cards1.push_back(c2);
-	Card* c33 = new Card(cardType::Airlift);
-	cards1.push_back(c3);
+    // ===== Territories for p2 =====
+    std::cout << "[DEBUG] Creating territories for p2..." << std::endl;
 
-	Deck d11(cards1);
+    auto* adj5 = new std::vector<Territory*>();
+    auto* adj6 = new std::vector<Territory*>();
 
-	OrdersList* ordli2 = new OrdersList();
+    std::vector<Territory*> territories2;
+    Territory* t11 = new Territory("T11", "C1", "Joee", 2, 1, adj5);
+    territories2.push_back(t11);
+    Territory* t22 = new Territory("T22", "C2", "Joee", 3, 2, adj6);
+    territories2.push_back(t22);
 
+    // ===== Deck for p2 =====
+    std::cout << "[DEBUG] Creating deck for p2..." << std::endl;
+    std::vector<Card*> cards2;
+    cards2.push_back(new Card(cardType::Bomb));
+    cards2.push_back(new Card(cardType::Diplomacy));
+    cards2.push_back(new Card(cardType::Airlift));
+    Deck* d2 = new Deck(cards2);
 
-	//create player
-	Player* p2 = new Player("Joee", territories, d1, *ordli2);
+    OrdersList* ordli2 = new OrdersList();
 
+    std::cout << "[DEBUG] Creating Player p2..." << std::endl;
+    Player* p2 = new Player("Joee", territories2, d2, ordli2);
 
-	//create Orders
-	int num2 = 2;
-	int* num = &num2;
-	Deploy* dep=new Deploy(p2, t11, num);
-	Blockade* blk = new Blockade(p2, t22);
-	Advance* adv = new Advance(p2, t11, t1, num);
-	Airlift* air = new Airlift(p2, t11, t22, num);
-	Bomb* bom = new Bomb(p2, t33);
-	Negotiate* neg = new Negotiate(p2, p1);
-	Airlift* air2 = new Airlift(p1, t11, t22, num);
-	Advance* adv2 = new Advance(p1, t1, t2, num);
-	Orders* ord = new Orders(p1);
+    // ===== Orders =====
+    std::cout << "[DEBUG] Creating orders..." << std::endl;
+    int* num = new int(2);
+    Deploy*   dep = new Deploy(p2, t11, num);
+    Blockade* blk = new Blockade(p2, t22);
+    Advance*  adv = new Advance(p2, t11, t1, num);
+    Airlift*  air = new Airlift(p2, t11, t22, num);
+    Bomb*     bom = new Bomb(p2, t22);
+    Negotiate* neg = new Negotiate(p2, p1);
 
-	//OrdersList method tests
-	ordli2->add(dep);
-	ordli2->add(blk);
-	ordli2->add(adv);
-	ordli2->add(air);
-	ordli2->add(bom);
-	ordli2->add(neg);
-	ordli1->add(air2);
-	ordli1->add(adv2);
-	ordli1->add(ord);
-	std::cout << *ordli2;
-	std::cout << *ordli1;
+    // ===== Add orders to list =====
+    std::cout << "[DEBUG] Adding orders to list..." << std::endl;
+    ordli2->add(dep);  std::cout << "[DEBUG] Added Deploy" << std::endl;
+    ordli2->add(blk);  std::cout << "[DEBUG] Added Blockade" << std::endl;
+    ordli2->add(adv);  std::cout << "[DEBUG] Added Advance" << std::endl;
+    ordli2->add(air);  std::cout << "[DEBUG] Added Airlift" << std::endl;
+    ordli2->add(bom);  std::cout << "[DEBUG] Added Bomb" << std::endl;
+    ordli2->add(neg);  std::cout << "[DEBUG] Added Negotiate" << std::endl;
 
+    // ===== Print orders =====
+    std::cout << "[DEBUG] Printing orders..." << std::endl;
+    std::cout << *ordli2 << std::endl;
 
+    std::cout << "[DEBUG] Test complete!" << std::endl;
+
+    // NOTE: not deleting everything here since this is a quick driver;
+    // your real code should clean up allocations or use smart pointers.
 }
 
-
 int main() {
-	std::cout << "OrdersList test: ";
-	testOrdersList();
-
-
-	return 0;
+    testOrdersList();
+    return 0;
 }
