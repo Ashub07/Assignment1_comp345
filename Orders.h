@@ -1,8 +1,11 @@
+#ifndef ORDER_H
+#define ORDER_H
 #include <iostream>
 #include <string>
 #include <vector>
 #include "Player.h"
 #include "Map.h"
+
 
 //create Orders class, and the subclasses are the deploy, attack, negotiate, etc. user input determines which subclass is created 
 //(and can also make invalid order that's placed in list and then jsut ignored)
@@ -41,6 +44,7 @@ public:
 
 	virtual Orders* clone() const;
 
+	virtual std::string toString() const;
 };
 
 //subclasses
@@ -79,6 +83,7 @@ public:
 
 	virtual Deploy* clone() const;
 
+	std::string toString() const;
 };
 
 class Advance : public Orders {
@@ -119,7 +124,7 @@ public:
 	virtual bool execute() const;
 
 	virtual Advance* clone() const;
-
+	std::string toString() const;
 };
 
 class Bomb : public Orders {
@@ -155,6 +160,7 @@ public:
 
 	virtual bool execute() const;
 	virtual Bomb* clone() const;
+	std::string toString() const;
 };
 
 class Blockade : public Orders {
@@ -174,6 +180,7 @@ public:
 	//assignment+stream insertion operator
 	Blockade& operator=(const Blockade& order);
 	friend std::ostream& operator<<(std::ostream& os, const Blockade& order);
+	
 
 	//getters
 	Player getPlayer() const;
@@ -190,6 +197,7 @@ public:
 
 	virtual bool execute() const;
 	virtual Blockade* clone() const;
+	std::string toString() const;
 };
 
 class Airlift : public Orders {
@@ -229,6 +237,7 @@ public:
 
 	virtual bool execute() const;
 	virtual Airlift* clone() const;
+	std::string toString() const;
 };
 
 class Negotiate : public Orders {
@@ -263,6 +272,7 @@ public:
 
 	virtual bool execute() const;
 	virtual Negotiate* clone() const;
+	std::string toString() const; 
 };
 
 class OrdersList
@@ -298,3 +308,4 @@ public:
 
 };
 
+#endif

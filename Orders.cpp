@@ -35,7 +35,7 @@ Orders& Orders::operator=(const Orders& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Orders& order) {
-	os << "These orders belong to: " << order.player;
+	os << "This order belongs to: " << order.player->getPName();
 	return os;
 }
 
@@ -50,8 +50,17 @@ Orders* Orders::clone() const {
 	return new Orders(*this);
 }
 
+bool Orders :: validate() const {
+	return true;
+ }
 
+bool Orders::execute() const {
+	return false;
+ }
 
+std::string Orders::toString() const {
+	return "This order belongs to: " + player->getPName();
+}
 
 Deploy::Deploy() : Orders(nullptr) {
 }
@@ -99,7 +108,7 @@ Deploy& Deploy::operator=(const Deploy& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Deploy& order) {
-	os << "This is a Deploy order belonging to " << order.player << " to deploy " << order.armyNum << " armies to the territory " << order.targ;
+	os << "This is a Deploy order belonging to " << order.player->getPName() << " to deploy " << order.armyNum << " armies to the territory " << order.targ->getName();
 	return os;
 }
 
@@ -124,7 +133,7 @@ void Deploy::setArmynum(int armies) {
 
 bool Deploy::validate() const{
 	if (player == nullptr || targ == nullptr || *armyNum<=0) return false;
-	return targ->getOwner() == player && player->getArmies() >= armyNum;
+	return targ->getOwner() == player->getPName() && targ->getArmies() >= getArmynum();
 }
 
 bool Deploy::execute() const {
@@ -136,6 +145,9 @@ Deploy* Deploy::clone() const {
 	return new Deploy(*this);
 }
 
+std::string Deploy::toString() const {
+	return "This is a Deploy order belonging to " + player->getPName() + " to deploy " + std::to_string(*armyNum) + " armies to the territory " + targ->getName();
+}
 
 Advance::Advance() : Orders(nullptr) {
 }
@@ -191,7 +203,7 @@ Advance& Advance::operator=(const Advance& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Advance& order) {
-	os << "This is an Advance order belonging to " << order.player << " to Advance " << order.armyNum << " armies to the territory " << order.targ << "from source territory " << order.source;
+	os << "This is an Advance order belonging to " << order.player->getPName() << " to Advance " << order.armyNum << " armies to the territory " << order.targ->getName() << " from source territory " << order.source->getName();
 	return os;
 }
 
@@ -223,7 +235,7 @@ void Advance::setArmynum(int armies) {
 
 bool Advance::validate() const {
 	if (player == nullptr || targ == nullptr || source == nullptr || *armyNum <= 0) return false;
-	return targ->getOwner() == player && source->getOwner() == player && player->getArmies() >= armyNum;
+	return targ->getOwner() == player->getPName() && source->getOwner() == player->getPName() && targ->getArmies() >= getArmynum();
 }
 
 bool Advance::execute() const {
@@ -235,7 +247,9 @@ Advance* Advance::clone() const {
 	return new Advance(*this);
 }
 
-
+std::string Advance::toString() const {
+	return "This is an Advance order belonging to " + player->getPName() + " to Advance " + std::to_string(*armyNum) + " armies to the territory " + targ->getName() + " from source territory " + source->getName();
+}
 
 Bomb::Bomb() : Orders(nullptr) {
 }
@@ -279,7 +293,7 @@ Bomb& Bomb::operator=(const Bomb& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Bomb& order) {
-	os << "This is a Bomb order belonging to " << order.player << " to Bomb territory " << order.targ;
+	os << "This is a Bomb order belonging to " << order.player->getPName() << " to Bomb territory " << order.targ->getName();
 	return os;
 }
 
@@ -298,7 +312,12 @@ void Bomb::setTarget(Territory targ) {
 
 bool Bomb::validate() const {
 	if (player == nullptr || targ == nullptr ) return false;
-	return targ->isAdjacent();
+	for (auto t : player->getTerritory()) 
+		if (targ->isAdjacent(*t))
+			return true;
+	
+
+	return false;
 }
 
 bool Bomb::execute() const {
@@ -309,6 +328,9 @@ Bomb* Bomb::clone() const {
 	return new Bomb(*this);
 }
 
+std::string Bomb::toString() const {
+	return "This is a Bomb order belonging to " + player->getPName() + " to Bomb territory " + targ->getName();
+}
 
 Blockade::Blockade() : Orders(nullptr) {
 }
@@ -352,7 +374,7 @@ Blockade& Blockade::operator=(const Blockade& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Blockade& order) {
-	os << "This is a Blockade order belonging to " << order.player << " to Blockade territory " << order.targ;
+	os << "This is a Blockade order belonging to " << order.player->getPName() << " to Blockade territory " << order.targ->getName();
 	return os;
 }
 
@@ -371,7 +393,7 @@ void Blockade::setTarget(Territory targ) {
 
 bool Blockade::validate() const {
 	if (player == nullptr || targ == nullptr) return false;
-	return targ->getOwner() == player;
+	return targ->getOwner() == player->getPName();
 }
 
 bool Blockade::execute() const {
@@ -382,6 +404,9 @@ Blockade* Blockade::clone() const {
 	return new Blockade(*this);
 }
 
+std::string Blockade::toString() const {
+	return "This is a Blockade order belonging to " + player->getPName() + " to Blockade territory " + targ->getName();
+}
 
 Airlift::Airlift() : Orders(nullptr) {
 }
@@ -437,7 +462,7 @@ Airlift& Airlift::operator=(const Airlift& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Airlift& order) {
-	os << "This is an Airlift order belonging to " << order.player << " to Airlift " << order.armyNum << " armies to the territory " << order.targ << "from source territory " << order.source;
+	os << "This is an Airlift order belonging to " << order.player->getPName() << " to Airlift " << order.armyNum << " armies to the territory " << order.targ->getName() << " from source territory " << order.source->getName();
 	return os;
 }
 
@@ -469,7 +494,7 @@ void Airlift::setArmynum(int armies) {
 
 bool Airlift::validate() const {
 	if (player == nullptr || targ == nullptr || source == nullptr || *armyNum <= 0) return false;
-	return targ->getOwner() == player && source->getOwner() == player && player->getArmies() >= armyNum;
+	return targ->getOwner() == player->getPName() && source->getOwner() == player->getPName() && targ->getArmies() >= getArmynum();
 }
 
 bool Airlift::execute() const {
@@ -478,6 +503,10 @@ bool Airlift::execute() const {
 }
 Airlift* Airlift::clone() const {
 	return new Airlift(*this);
+}
+
+std::string Airlift::toString() const {
+	return "This is an Airlift order belonging to " + player->getPName() + " to Airlift " + std::to_string(*armyNum) + " armies to the territory " + targ->getName() + " from source territory " + source->getName();
 }
 
 
@@ -523,7 +552,7 @@ Negotiate& Negotiate::operator=(const Negotiate& order) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream& os, const Negotiate& order) {
-	os << "This is a Negotiate order belonging to " << order.player << " to Negotiate Player " << order.targ;
+	os << "This is a Negotiate order belonging to " << order.player->getPName() << " to Negotiate with Player " << order.targ->getPName();
 	return os;
 }
 
@@ -553,14 +582,19 @@ Negotiate* Negotiate::clone() const {
 	return new Negotiate(*this);
 }
 
-
+std::string Negotiate::toString() const {
+	return "This is a Negotiate order belonging to " + player->getPName() + " to Negotiate with Player " + targ->getPName();
+}
 
 
 //constructors
-OrdersList::OrdersList() { }
+OrdersList::OrdersList() {
+	orders = new std::vector<Orders*>();
+}
 
 //copy constructor
 OrdersList::OrdersList(const OrdersList& order) {
+	orders = new std::vector<Orders*>();
 	for (int i = 0; i < order.orders->size(); i++) {
 		Orders* ord = order.orders->at(i)->clone();
 		this->orders->push_back(ord);
@@ -573,6 +607,7 @@ OrdersList::OrdersList(const OrdersList& order) {
 OrdersList::~OrdersList() {
 	while (!orders->empty())
 		delete orders->back();
+	delete orders;
 }
 
 //assignment+stream insertion operator
@@ -589,10 +624,10 @@ OrdersList& OrdersList::operator=(const OrdersList& order) {
 
 std::ostream& operator<<(std::ostream& os, const OrdersList& order) {
 	os << "Orders: ";
-	for (int i = 0; i < order.orders->size(); i++) {
-		os << *order.orders->at(i) << ", ";
+	for (int i = 0; i < order.orders->size()-1; i++) {
+		os << order.orders->at(i)->toString() << ", ";
 	}
-	os << ".";
+	os << order.orders->at(order.orders->size()-1)->toString() << ". ";
 	return os;
 }
 
@@ -610,7 +645,8 @@ void OrdersList::setOrders(std::vector<Orders*> orderss) {
 
 //methods needed:
 void OrdersList::add(Orders* order) {
-	this->orders->push_back(order);
+	if (order->validate())
+		this->orders->push_back(order);
 }
 
 void OrdersList::remove(Orders* order) {
